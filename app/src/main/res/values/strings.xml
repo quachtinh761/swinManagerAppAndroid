@@ -2,5 +2,4 @@
     <string name="app_name">SwinManageAppAndroid</string>
     <string name="txtText">This is text view</string>
     <string name="edtText">This is edit text</string>
-    <string name="btnActionText">click and edit</string>
 </resources>
