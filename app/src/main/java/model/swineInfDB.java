@@ -49,7 +49,7 @@ public class swineInfDB {
                 + this.KEY_dateImport + " TEXT, "
                 + this.KEY_dateFirstVaccine + " TEXT, "
                 + this.KEY_dateCoordination + " TEXT, "
-                + this.KEY_numOfGoat + " TEXT, ";
+                + this.KEY_numOfGoat + " TEXT)";
         CREATE_TABLE_STUDENT += "END";
         db.execSQL(CREATE_TABLE_STUDENT);
     }
