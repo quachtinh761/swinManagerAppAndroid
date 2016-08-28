@@ -1,4 +1,5 @@
-public class constant {
+package common.constant;
+public class swineConstant {
     public final static int
             idInt = 0,
             nameInt = 1,

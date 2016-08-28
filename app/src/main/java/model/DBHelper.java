@@ -57,6 +57,15 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
     }
 
+    public static List<String[]> searchTable(SQLiteDatabase db, String sql){
+        List <String[]> result = new ArrayList<>();
+        try {
+            Cursor cursor = db.rawQuery(sql, null);
+        }catch (Exception e){
+        }
+        return result;
+    }
+
     /**
      * Map <String, String> params = new HashMap<String,String>();
      * params.put("fieldName1","fieldValueChange1");
