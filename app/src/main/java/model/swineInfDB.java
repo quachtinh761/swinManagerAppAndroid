@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import object.swineObject;
+
 public class swineInfDB {
 
     private DBHelper dbHelper;

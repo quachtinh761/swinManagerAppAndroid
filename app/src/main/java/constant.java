@@ -1,6 +1,3 @@
-/**
- * Created by Nguyen Van Tinh on 27/08/2016.
- */
 public class constant {
     public final static int
             idInt = 0,

@@ -1,4 +1,4 @@
-package model;
+package object;
 
 public class swineObject {
     //this is data of swine
