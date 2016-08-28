@@ -2,13 +2,9 @@ package model;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -39,72 +35,26 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + tableName);
     }
 
-    public static List<String[]> searchTable(SQLiteDatabase db, String tableName, String valueNeedToSearch, String condition, String orderBy, String groupBy){
-        List <String[]> result = new ArrayList<>();
-        try {
-            String selectQuery = "SELECT " + valueNeedToSearch
-                    + " FROM " + tableName
-                    + " WHERE " + condition;
-            if (!groupBy.equals("")){
-                selectQuery += " GROUP BY " + groupBy;
-            }
-            if (!orderBy.equals("")){
-                selectQuery += " ORDER BY " + orderBy;
-            }
-            Cursor cursor = db.rawQuery(selectQuery, null);
-        }catch (Exception e){
-        }
-        return result;
-    }
-
-    public static List<String[]> searchTable(SQLiteDatabase db, String sql){
-        List <String[]> result = new ArrayList<>();
-        try {
-            Cursor cursor = db.rawQuery(sql, null);
-        }catch (Exception e){
-        }
-        return result;
-    }
-
     /**
      * Map <String, String> params = new HashMap<String,String>();
-     * params.put("fieldName1","fieldValueChange1");
-     * params.put("fieldName2","fieldValueChange2");
-     * condition: where ...
+     * params.put("fieldName1","filedValue1");
+     * params.put("fieldName2","filedValue2");
      **/
-    public static void updateTable(SQLiteDatabase db, String tableName, Map<String, String> params, String condition){
+    public void insert(SQLiteDatabase db, String tableName, Map<String, String> params) {
+        //Open connection to write data
         ContentValues values = new ContentValues();
         for (Map.Entry<String, String> entry : params.entrySet()){
             values.put(entry.getKey(), entry.getValue());
         }
-        db.update(tableName, values, condition, null);
+        // Inserting Row
+        db.insert(tableName, null, values);
+        db.close(); // Closing database connection
     }
 
     /**
      * Map <String, String> params = new HashMap<String,String>();
-     * params.put("fieldName1","fieldValue1");
-     * params.put("fieldName2","fieldValue2");
-     **/
-    public static boolean insertTable(SQLiteDatabase db, String tableName, Map<String, String> params) {
-        //Open connection to write data
-        try {
-            ContentValues values = new ContentValues();
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                values.put(entry.getKey(), entry.getValue());
-            }
-            // Inserting Row
-            db.insert(tableName, null, values);
-            db.close(); // Closing database connection
-            return true;
-        }catch (Exception e){
-            return false;
-        }
-    }
-
-    /**
-     * Map <String, String> params = new HashMap<String,String>();
-     * params.put("fieldName1","filedType1(primary key if needed)");
-     * params.put("fieldName2","filedType2 (not null)");
+     * params.put("fieldName1","filedType1");
+     * params.put("fieldName2","filedType2");
      **/
     public static boolean createTable(SQLiteDatabase db, String tableName, Map<String, String> params){
         try {
