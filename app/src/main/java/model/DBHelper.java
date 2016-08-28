@@ -85,21 +85,26 @@ public class DBHelper extends SQLiteOpenHelper {
      * params.put("fieldName1","fieldValue1");
      * params.put("fieldName2","fieldValue2");
      **/
-    public void insertTable(SQLiteDatabase db, String tableName, Map<String, String> params) {
+    public static boolean insertTable(SQLiteDatabase db, String tableName, Map<String, String> params) {
         //Open connection to write data
-        ContentValues values = new ContentValues();
-        for (Map.Entry<String, String> entry : params.entrySet()){
-            values.put(entry.getKey(), entry.getValue());
+        try {
+            ContentValues values = new ContentValues();
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                values.put(entry.getKey(), entry.getValue());
+            }
+            // Inserting Row
+            db.insert(tableName, null, values);
+            db.close(); // Closing database connection
+            return true;
+        }catch (Exception e){
+            return false;
         }
-        // Inserting Row
-        db.insert(tableName, null, values);
-        db.close(); // Closing database connection
     }
 
     /**
      * Map <String, String> params = new HashMap<String,String>();
-     * params.put("fieldName1","filedType1");
-     * params.put("fieldName2","filedType2");
+     * params.put("fieldName1","filedType1(primary key if needed)");
+     * params.put("fieldName2","filedType2 (not null)");
      **/
     public static boolean createTable(SQLiteDatabase db, String tableName, Map<String, String> params){
         try {

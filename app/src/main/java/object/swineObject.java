@@ -2,11 +2,10 @@ package object;
 
 public class swineObject {
     //this is data of swine
-    private String id, name, dateImport, dateFirstVaccine, dateCoordination;
-    private int numOfGoat;
+    private String id, name, dateImport, dateFirstVaccine, dateCoordination, numOfGoat;
 
     public swineObject() {
-        this.numOfGoat = 1;
+        this.numOfGoat = "";
         this.id = "";
         this.name = "";
         this.dateImport = "";
@@ -14,7 +13,7 @@ public class swineObject {
         this.dateCoordination = "";
     }
 
-    public swineObject(int numOfGoat, String id, String name, String dateImport, String dateFirstVaccine, String dateCoordination) {
+    public swineObject(String id, String name, String dateImport, String dateFirstVaccine, String dateCoordination, String numOfGoat) {
         this.numOfGoat = numOfGoat;
         this.id = id;
         this.name = name;
@@ -63,11 +62,11 @@ public class swineObject {
         this.dateCoordination = dateCoordination;
     }
 
-    public int getNumOfGoat() {
+    public String getNumOfGoat() {
         return numOfGoat;
     }
 
-    public void setNumOfGoat(int numOfGoat) {
+    public void setNumOfGoat(String numOfGoat) {
         this.numOfGoat = numOfGoat;
     }
 }
