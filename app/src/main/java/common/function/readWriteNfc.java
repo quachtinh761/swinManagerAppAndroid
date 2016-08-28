@@ -4,16 +4,16 @@ import android.nfc.NfcAdapter;
 import android.nfc.tech.MifareClassic;
 import java.io.IOException;
 import android.support.v7.app.AppCompatActivity;
-
+import android.nfc.Tag;
 import org.json.JSONObject;
-
+import java.lang.String;
 /**
  * Use for Read and write NFC Tag in Pig Project
  * It only using for 1k NFC tag
  * ---------------------------------------------------------------------------------
  * List of method in this class:
  *      CheckNfcDevice: return 0 if device hasn't NFC Adapter, 1. have nfc but don't enable, 2. have nfc and enable
- *
+ *      String[] cuttingStringToArray(String str): truyền vào str dạng $id#name#dateinport#datevaccine#datesex$ và trả về array[5]
  * ----------------------------------------------------------------------------------
  * Created by Nguyen Van Thi on 27/08/2016.
  */
@@ -23,13 +23,15 @@ public class readWriteNfc extends AppCompatActivity{
     private byte[] passA = {(byte)0x12,(byte)0x34,(byte)0x56,(byte)0x12,(byte)0x34,(byte)0x56};
     private byte[] passB = {(byte)0x65,(byte)0x43,(byte)0x21,(byte)0x65,(byte)0x43,(byte)0x21};
     //use in read
-    boolean sucess;
+    public boolean readSucess, writeSucess;
     final int numOfSector = 16;
     final int numOfBlockInSector = 4;
     final int BlockSize = 16;
     public byte[][][] readbuf = new byte[numOfSector][numOfBlockInSector][BlockSize];
     MifareClassic tag;
-    int numSectorUsed = 4;
+    Tag taskTag;
+    public String ID;
+    int numSectorUsed = 3;
     //use in write
     public byte[][][] writebuf = new byte[numOfSector][numOfBlockInSector][BlockSize];
 
@@ -45,10 +47,11 @@ public class readWriteNfc extends AppCompatActivity{
         else return 2;
     }
 
-    public void ReadNfcData() {
+    public String ReadNfcData() {
         /**
          * This method use for read NFC Tag for all case
          */
+        String readTemp = null;
         switch (CheckNfcDevice()) {
             case 0:
                 //add method in future
@@ -59,9 +62,10 @@ public class readWriteNfc extends AppCompatActivity{
                 break;
             case 2:
                 //Method read normal
-                ReadNfc(passA);
+                readTemp = ReadNfc(passA);
                 break;
         }
+        return readTemp;
     }
 
     public void WriteNfcData(String DataTransfer) {
@@ -82,34 +86,66 @@ public class readWriteNfc extends AppCompatActivity{
                 break;
         }
     }
+    public String[] cuttingStringToArray(String str){
+        int m = 1;
+        String[] buf= new String[5];
+        int[] temp = new int[6];
+        temp[0]=0;
+        temp[5]=str.length()-1;
+        if (str.startsWith("$")&&str.endsWith("$")){
+            for (int i=1; i < str.length()-1; i++){
+                if(str.charAt(i)=='#'){
+                    temp[m] = i;
+                    m++;
+                }
+            }
+            if (m != 5) return null;
+            for(int i=0;i<5;i++){
+                buf[i] = str.substring(temp[i]+1,temp[i+1]);
+            }
+            return buf;
+        }else return null;
+    }
+    public boolean changeKeyAll(){
+        try {
+            tag.connect();
+            for (int i=1;i< numOfSector;i++){
+                if (tag.authenticateSectorWithKeyA(i,MifareClassic.KEY_DEFAULT)||tag.authenticateSectorWithKeyB(i,MifareClassic.KEY_DEFAULT)||
+                        tag.authenticateSectorWithKeyA(i,MifareClassic.KEY_MIFARE_APPLICATION_DIRECTORY)||tag.authenticateSectorWithKeyB(i,MifareClassic.KEY_MIFARE_APPLICATION_DIRECTORY)||
+                        tag.authenticateSectorWithKeyA(i,MifareClassic.KEY_NFC_FORUM)||tag.authenticateSectorWithKeyB(i,MifareClassic.KEY_NFC_FORUM)){
+                    byte[] keyAll = {(byte)0x12,(byte)0x34,(byte)0x56,(byte)0x12,(byte)0x34,(byte)0x56,(byte)0xff,(byte)0x07,(byte)0x80,(byte)0x69,(byte)0x65,(byte)0x43,(byte)0x21,(byte)0x65,(byte)0x43,(byte)0x21};
+                    tag.writeBlock(i*numOfBlockInSector + 3, keyAll);
+                }
+            }
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     //----------------Private Method-----------------------
 
     //this method read normal Nfc Tag
-    private void ReadNfc(byte[] passA) {
+    private String ReadNfc(byte[] passA) {
         try {
-            tag.connect();//connect to tag
-            for (int i = 0; i < numSectorUsed; i++) {
+            tag.connect();
+            for (int i = 1; i < numSectorUsed; i++) {
                 if (tag.authenticateSectorWithKeyA(i, passA)) { //check pass A to read
                     for (int j = 0; j < numOfBlockInSector - 1; j++) {//only read 3 block in secctor
                         int index = i * numOfBlockInSector + j;
                         readbuf[i][j] = tag.readBlock(index);
                         if (!tag.isConnected()) {
-                            sucess = false;
-                            return;
+                            readSucess = false;
+                            return null;
                         }
                     }
                 }
-                else {
-                    byte[] keyAll = {(byte)0x12,(byte)0x34,(byte)0x56,(byte)0x12,(byte)0x34,(byte)0x56,(byte)0xff,(byte)0x07,(byte)0x80,(byte)0x69,(byte)0x65,(byte)0x43,(byte)0x21,(byte)0x65,(byte)0x43,(byte)0x21};
-                    tag.writeBlock(i*numOfBlockInSector + 3, keyAll);
-
-                }
             }
-            sucess = true;//check if read sucess
+            readSucess = true;//check if read sucess
         } catch (IOException e) {
             e.printStackTrace();
-            sucess = false;
+            readSucess = false;
         } finally {
             if (tag != null) {
                 try {
@@ -122,6 +158,8 @@ public class readWriteNfc extends AppCompatActivity{
     }
 
     private void WriteNfc(byte[] passB, String Data) {
+        String[] tempData = new String[5];
+        tempData = cuttingStringToArray(Data);
         try {
             tag.connect();
             byte[] temp = new byte[16];
@@ -148,7 +186,7 @@ public class readWriteNfc extends AppCompatActivity{
             }
         }
     }
-    private void ChangeKey(){
-
+    private String convertByteToStringArray{
+        String temp= "$";
     }
 }
