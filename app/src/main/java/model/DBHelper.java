@@ -51,9 +51,8 @@ public class DBHelper extends SQLiteOpenHelper {
             if (!orderBy.equals("")){
                 selectQuery += " ORDER BY " + orderBy;
             }
-            //Cursor cursor = db.rawQuery(selectQuery, null);
+            Cursor cursor = db.rawQuery(selectQuery, null);
         }catch (Exception e){
-            result = null;
         }
         return result;
     }
@@ -61,9 +60,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public static List<String[]> searchTable(SQLiteDatabase db, String sql){
         List <String[]> result = new ArrayList<>();
         try {
-            //Cursor cursor = db.rawQuery(sql, null);
+            Cursor cursor = db.rawQuery(sql, null);
         }catch (Exception e){
-            result = null;
         }
         return result;
     }
@@ -87,7 +85,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * params.put("fieldName1","fieldValue1");
      * params.put("fieldName2","fieldValue2");
      **/
-    public boolean insertTable(SQLiteDatabase db, String tableName, Map<String, String> params) {
+    public static boolean insertTable(SQLiteDatabase db, String tableName, Map<String, String> params) {
         //Open connection to write data
         try {
             ContentValues values = new ContentValues();
