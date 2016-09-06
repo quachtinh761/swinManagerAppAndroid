@@ -1,7 +1,4 @@
 apply plugin: 'java'
-include ':app', ':poi'
-project(':poi').projectDir = new File('libs/poi')
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files('libs/poi.jar')
 }

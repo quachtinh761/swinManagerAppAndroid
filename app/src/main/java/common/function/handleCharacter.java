@@ -22,7 +22,7 @@ public class handleCharacter {
     public static char encodeChar(char input){
         char result = 0;
         switch (input){
-            case ' ':
+            case 'â':
                 break;
             default:
                 result = input;

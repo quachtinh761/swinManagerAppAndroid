@@ -15,18 +15,20 @@
         android:text="@string/txtText"
         android:textSize="36dp"
         android:id="@+id/txtText"
-        android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/edtText"
-        android:layout_alignStart="@+id/edtText" />
+        android:layout_alignParentTop="true"/>
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/edtText"
-        android:textSize="36dp"
+        android:textSize="30dp"
+        android:inputType="textCapSentences|textCapWords|textCapCharacters|text"
         android:id="@+id/edtText"
         android:layout_below="@+id/btnAction"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:clickable="false"
+        android:maxLength="16"
+        android:singleLine="true" />
 
     <Button
         android:layout_width="wrap_content"
