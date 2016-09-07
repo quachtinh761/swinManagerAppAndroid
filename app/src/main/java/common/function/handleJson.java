@@ -4,7 +4,6 @@ import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.util.Map;
-import java.util.Objects;
 
 public class handleJson {
 
@@ -18,7 +17,7 @@ public class handleJson {
         for (Map.Entry<String, String> entry : inputData.entrySet()){
             String value = "";
             for (int i = 0; i < entry.getValue().length(); i++){
-                value += handleCharacter.encodeChar(entry.getValue().charAt(i));
+                value += handleString.encodeChar(entry.getValue().charAt(i));
             }
             result += "" + entry.getKey() + ":" + value + ",";
         }
