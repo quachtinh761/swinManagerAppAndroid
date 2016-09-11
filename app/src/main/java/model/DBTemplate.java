@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DBHelper extends SQLiteOpenHelper {
+public class DBTemplate extends SQLiteOpenHelper {
     //version number to upgrade database version
     //each time if you Add, Edit table, you need to change the
     //version number.
@@ -20,7 +20,7 @@ public class DBHelper extends SQLiteOpenHelper {
     // Database Name
     private static final String DATABASE_NAME = "crud.db";
 
-    public DBHelper(Context context ) {
+    public DBTemplate(Context context ) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.db = this.getWritableDatabase();
     }

@@ -1,6 +1,5 @@
 package model;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -11,7 +10,7 @@ import object.swineObject;
 
 public class swineInfDB {
 
-    private DBHelper dbHelper;
+    private DBTemplate dbTemplate;
     private swineObject swine;
     private SQLiteDatabase db;
     //this is key of swine in database
@@ -24,13 +23,12 @@ public class swineInfDB {
             KEY_numOfGoat = "goat";
 
     public swineInfDB(Context context, swineObject swine) {
-        dbHelper = new DBHelper(context);
-        this.db = dbHelper.getWritableDatabase();
+        dbTemplate = new DBTemplate(context);
+        this.db = dbTemplate.getWritableDatabase();
         this.swine = swine;
     }
 
     public boolean insertSwineInf(swineObject swine) {
-        //Open connection to write data
         Map <String, String> values = new HashMap<>();
         values.put(this.KEY_id, swine.getId());
         values.put(this.KEY_name, swine.getName());
@@ -38,11 +36,11 @@ public class swineInfDB {
         values.put(this.KEY_dateFirstVaccine, swine.getDateVaccine());
         values.put(this.KEY_dateCoordination, swine.getDateCoordination());
         values.put(this.KEY_numOfGoat, swine.getNumOfGoat());
-        return DBHelper.insertTable(this.db, this.DBTable, values);
+        return DBTemplate.insertTable(this.db, this.DBTable, values);
     }
 
     //create swine table on database
-    public boolean createTable() {
+    public boolean createTableSwine() {
         Map<String, String> table = new HashMap<>();
         table.put(this.KEY_id, "TEXT PRIMARY KEY");
         table.put(this.KEY_name, "TEXT NOT NULL");
@@ -50,9 +48,23 @@ public class swineInfDB {
         table.put(this.KEY_dateFirstVaccine, "TEXT NOT NULL");
         table.put(this.KEY_dateCoordination, "TEXT NOT NULL");
         table.put(this.KEY_numOfGoat, "TEXT NOT NULL");
-        return DBHelper.createTable(this.db, this.DBTable, table);
+        return DBTemplate.createTable(this.db, this.DBTable, table);
     }
 
+    //update swine information
+    public void updateSwineInfo(swineObject swine){
+        Map <String, String> values = new HashMap<>();
+        values.put(this.KEY_name, swine.getName());
+        values.put(this.KEY_dateImport, swine.getDateImport());
+        values.put(this.KEY_dateFirstVaccine, swine.getDateVaccine());
+        values.put(this.KEY_dateCoordination, swine.getDateCoordination());
+        values.put(this.KEY_numOfGoat, swine.getNumOfGoat());
+        DBTemplate.updateTable(this.db, this.DBTable, values, this.KEY_id + "='" + swine.getId() + "'");
+    }
 
+    //delete swine table (if it is needed)
+    public void deleteTableSwine(){
+        DBTemplate.deleteTable(this.db, DBTable);
+    }
 
 }

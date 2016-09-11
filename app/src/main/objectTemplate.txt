@@ -1,0 +1,4 @@
+*object: property of object
+*model: create, update object on database
+*constant: constant of object
+*controller: handle data type. e.g.: check data type before call insertTable function
