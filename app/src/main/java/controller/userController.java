@@ -22,9 +22,10 @@ public class userController {
 
     public boolean changePassword(String oldPassword, String newPassword){
         boolean success = false;
+        //this function will require old password to confirm with current user
         if (this.user.getUserPassword().equals(oldPassword)){
             this.user.setUserPassword(newPassword);
-            userDB.updateUserInfo(this.user);
+            userDB.updateUserInf(this.user);
             success = true;
         }
         return success;
@@ -32,18 +33,21 @@ public class userController {
 
     public boolean changeUserName(String password, String newName){
         boolean success = false;
+        //this function will require old password to confirm with current user
         if (this.user.getUserPassword().equals(password)){
             this.user.setName(newName);
-            userDB.updateUserInfo(this.user);
+            userDB.updateUserInf(this.user);
             success = true;
         }
         return success;
     }
 
     public boolean addNewUser(userObject user){
-        boolean success = false;
+        boolean success = checkValidUser(user);
         //check valid data of user
-
+        if (success) {
+            userDB.insertUserInf(user);
+        }
         return success;
     }
 
@@ -51,10 +55,26 @@ public class userController {
         boolean valid = true;
         //id is not null and is not exist in database
         if (user.getUserId().equals("") || userDB.searchById(user.getUserId()).size() != 0){
-            valid = false;
+            return false;
         }
 
         //check length of name is not greater than 16
+        if (user.getName().length() > 32){
+            return false;
+        }
+
+        //check birthday is valid format dd/mm/yy
+        try{
+            String[] date = new String[3];
+            if (user.getBirthday().contains("/")){
+                user.getBirthday().split("/");
+            }else {
+                user.getBirthday().split("-");
+            }
+        }catch (Exception ex){
+            return false;
+        }
+
         return valid;
     }
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import common.constant.userConstant;
 import object.userObject;
 
 /**
@@ -18,11 +19,11 @@ public class userInfDB {
     private SQLiteDatabase db;
     //this is key of swine in database
     public String DBTable = "user";
-    public static String KEY_id = "id",
-            KEY_password = "password",
-            KEY_name = "name",
-            KEY_birthday = "birthday",
-            KEY_right = "right";
+    public static String KEY_id = userConstant.userIdString,
+            KEY_password = userConstant.passwordString,
+            KEY_name = userConstant.nameString,
+            KEY_birthday = userConstant.birthdayString,
+            KEY_right = userConstant.rightString;
     public userInfDB(Context context, userObject user) {
         dbTemplate = new DBTemplate(context);
         this.db = dbTemplate.getWritableDatabase();
@@ -32,10 +33,10 @@ public class userInfDB {
     public boolean createTableUser() {
         Map<String, String> table = new HashMap<>();
         table.put(this.KEY_id, "TEXT PRIMARY KEY");
-        table.put(this.KEY_password, "TEXT PRIMARY KEY");
+        table.put(this.KEY_password, "TEXT NOT NULL");
         table.put(this.KEY_name, "TEXT NOT NULL");
-        table.put(this.KEY_birthday, "TEXT PRIMARY KEY");
-        table.put(this.KEY_right, "TEXT PRIMARY KEY");
+        table.put(this.KEY_birthday, "TEXT NOT NULL");
+        table.put(this.KEY_right, "TEXT NOT NULL");
         return DBTemplate.createTable(this.db, this.DBTable, table);
     }
 
@@ -49,7 +50,7 @@ public class userInfDB {
         return DBTemplate.insertTable(this.db, this.DBTable, values);
     }
 
-    public void updateUserInfo(userObject user){
+    public void updateUserInf(userObject user){
         Map <String, String> values = new HashMap<>();
         values.put(this.KEY_password, user.getUserPassword());
         values.put(this.KEY_name, user.getName());
