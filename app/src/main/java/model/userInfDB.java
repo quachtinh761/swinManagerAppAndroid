@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import object.userObject;
@@ -46,5 +47,32 @@ public class userInfDB {
         values.put(this.KEY_birthday, user.getBirthday());
         values.put(this.KEY_right, user.getRight());
         return DBTemplate.insertTable(this.db, this.DBTable, values);
+    }
+
+    public void updateUserInfo(userObject user){
+        Map <String, String> values = new HashMap<>();
+        values.put(this.KEY_password, user.getUserPassword());
+        values.put(this.KEY_name, user.getName());
+        values.put(this.KEY_birthday, user.getBirthday());
+        values.put(this.KEY_right, user.getRight());
+        DBTemplate.updateTable(this.db, this.DBTable, values, this.KEY_id + "='" + user.getUserId() + "'");
+    }
+
+    //delete swine table (if it is needed)
+    public void deleteTableSwine(){
+        DBTemplate.deleteTable(this.db, DBTable);
+    }
+
+    //conditions separated by a comma
+    public List<String[]> search(String valueToSearch, String condition, String groupBy, String orderBy){
+        return DBTemplate.searchTable(this.db, valueToSearch, this.DBTable, condition, "", "");
+    }
+
+    public List<String[]> searchById(String idToSearch){
+        return DBTemplate.searchTable(this.db, "*", this.DBTable, this.KEY_id + "='" + idToSearch + "'", "", "");
+    }
+
+    public List <String[]> searchByName(String nameToSearch){
+        return DBTemplate.searchTable(this.db, "*", this.DBTable, this.KEY_name + "='" + nameToSearch + "'", "", "");
     }
 }

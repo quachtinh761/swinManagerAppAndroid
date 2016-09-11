@@ -4,8 +4,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import common.constant.swineConstant;
 import object.swineObject;
 
 public class swineInfDB {
@@ -15,12 +17,12 @@ public class swineInfDB {
     private SQLiteDatabase db;
     //this is key of swine in database
     public String DBTable = "swine";
-    public static String KEY_id = "id",
-            KEY_name = "name",
-            KEY_dateImport = "import",
-            KEY_dateFirstVaccine = "vaccine",
-            KEY_dateCoordination = "coordination",
-            KEY_numOfGoat = "goat";
+    public static String KEY_id = swineConstant.idString,
+            KEY_name = swineConstant.nameString,
+            KEY_dateImport = swineConstant.dateImportString,
+            KEY_dateFirstVaccine = swineConstant.dateFirstVaccineString,
+            KEY_dateCoordination = swineConstant.dateCoordinationString,
+            KEY_numOfGoat = swineConstant.numOfGoatString;
 
     public swineInfDB(Context context, swineObject swine) {
         dbTemplate = new DBTemplate(context);
@@ -65,6 +67,19 @@ public class swineInfDB {
     //delete swine table (if it is needed)
     public void deleteTableSwine(){
         DBTemplate.deleteTable(this.db, DBTable);
+    }
+
+    //conditions separated by a comma
+    public List <String[]> search(String valueToSearch, String condition, String groupBy, String orderBy){
+        return DBTemplate.searchTable(this.db, valueToSearch, this.DBTable, condition, "", "");
+    }
+
+    public List<String[]> searchById(String idToSearch){
+        return DBTemplate.searchTable(this.db, "*", this.DBTable, this.KEY_id + "='" + idToSearch + "'", "", "");
+    }
+
+    public List <String[]> searchByName(String nameToSearch){
+        return DBTemplate.searchTable(this.db, "*", this.DBTable, this.KEY_name + "='" + nameToSearch + "'", "", "");
     }
 
 }

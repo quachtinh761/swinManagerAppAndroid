@@ -65,23 +65,4 @@ public class userObject {
     public void setRight(String right) {
         this.right = right;
     }
-
-    public boolean changePassword(userObject user, String oldPassword, String newPassword){
-        boolean success = false;
-        if (user.getUserPassword().equals(oldPassword)){
-            user.setUserPassword(newPassword);
-            success = true;
-        }
-        return success;
-    }
-
-    public boolean changeUserName(String password, userObject user, String newName){
-        boolean success = false;
-        if (user.getUserPassword().equals(password)){
-            user.setName(newName);
-            success = true;
-        }
-        return success;
-    }
-
 }

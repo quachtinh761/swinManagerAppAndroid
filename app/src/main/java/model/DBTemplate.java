@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +38,7 @@ public class DBTemplate extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + tableName);
     }
 
-    public static List<String[]> searchTable(SQLiteDatabase db, String tableName, String valueNeedToSearch, String condition, String orderBy, String groupBy){
+    public static List<String[]> searchTable(SQLiteDatabase db, String valueNeedToSearch, String tableName, String condition, String orderBy, String groupBy){
         List <String[]> result = new ArrayList<>();
         try {
             String selectQuery = "SELECT " + valueNeedToSearch
