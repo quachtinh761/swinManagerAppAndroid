@@ -23,15 +23,11 @@ public class userObject {
         this.userPassword = userPassword;
         this.name = name;
         this.birthday = "";
-        this.right = "";
+        this.right = "1";
     }
 
     public String getUserId() {
         return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getUserPassword() {
@@ -60,9 +56,5 @@ public class userObject {
 
     public String getRight() {
         return right;
-    }
-
-    public void setRight(String right) {
-        this.right = right;
     }
 }
