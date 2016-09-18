@@ -22,7 +22,11 @@ public class swineInfDB {
             KEY_dateImport = swineConstant.dateImportString,
             KEY_dateFirstVaccine = swineConstant.dateFirstVaccineString,
             KEY_dateCoordination = swineConstant.dateCoordinationString,
-            KEY_numOfGoat = swineConstant.numOfGoatString;
+            KEY_numOfGoat = swineConstant.numOfGoatString,
+            KEY_earNumber = swineConstant.earNumberString,
+            KEY_numOfChildDie = swineConstant.numOfChildDieString,
+            KEY_dateWeaned = swineConstant.dateWeanedString,
+            KEY_dateVaccineChild = swineConstant.dateVaccineChildString;
 
     public swineInfDB(Context context, swineObject swine) {
         dbTemplate = new DBTemplate(context);
@@ -38,6 +42,10 @@ public class swineInfDB {
         values.put(this.KEY_dateFirstVaccine, swine.getDateVaccine());
         values.put(this.KEY_dateCoordination, swine.getDateCoordination());
         values.put(this.KEY_numOfGoat, swine.getNumOfGoat());
+        values.put(this.KEY_earNumber, swine.getearNumber());
+        values.put(this.KEY_numOfChildDie, swine.getNumOfChildDie());
+        values.put(this.KEY_dateWeaned, swine.getDateWeaned());
+        values.put(this.KEY_dateVaccineChild, swine.getDateVaccineChild());
         return DBTemplate.insertTable(this.db, this.DBTable, values);
     }
 
@@ -50,6 +58,10 @@ public class swineInfDB {
         table.put(this.KEY_dateFirstVaccine, "TEXT NOT NULL");
         table.put(this.KEY_dateCoordination, "TEXT NOT NULL");
         table.put(this.KEY_numOfGoat, "TEXT NOT NULL");
+        table.put(this.KEY_earNumber, "TEXT NOT NULL");
+        table.put(this.KEY_numOfChildDie, "TEXT NOT NULL");
+        table.put(this.KEY_dateWeaned, "TEXT NOT NULL");
+        table.put(this.KEY_dateVaccineChild, "TEXT NOT NULL");
         return DBTemplate.createTable(this.db, this.DBTable, table);
     }
 
@@ -61,6 +73,10 @@ public class swineInfDB {
         values.put(this.KEY_dateFirstVaccine, swine.getDateVaccine());
         values.put(this.KEY_dateCoordination, swine.getDateCoordination());
         values.put(this.KEY_numOfGoat, swine.getNumOfGoat());
+        values.put(this.KEY_earNumber, swine.getearNumber());
+        values.put(this.KEY_numOfChildDie, swine.getNumOfChildDie());
+        values.put(this.KEY_dateWeaned, swine.getDateWeaned());
+        values.put(this.KEY_dateVaccineChild, swine.getDateVaccineChild());
         DBTemplate.updateTable(this.db, this.DBTable, values, this.KEY_id + "='" + swine.getId() + "'");
     }
 
@@ -80,6 +96,13 @@ public class swineInfDB {
 
     public List <String[]> searchByName(String nameToSearch){
         return DBTemplate.searchTable(this.db, "*", this.DBTable, this.KEY_name + "='" + nameToSearch + "'", "", "");
+    }
+    public List <String[]> searchByDateImport(String dateImportToSearch){
+        return DBTemplate.searchTable(this.db, "*" , this.DBTable , this.KEY_dateImport + "=" + dateImportToSearch + "'", "", "");
+    }
+
+    public List <String[]> searchByearNumber(String earNumberToSearch){
+        return DBTemplate.searchTable(this.db, "*" , this.DBTable , this.KEY_dateImport + "=" + earNumberToSearch + "'", "", "");
     }
 
 }

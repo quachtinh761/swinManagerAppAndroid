@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 //import common.function.handleJson;
 
@@ -30,21 +32,70 @@ public class readWriteNfc {
     /*---------------------------------------variale-----------------------------*/
     // String urlWrite = "http://192.168.4.1/Client/WriteTag";
     private String dataReaded="";
-    private boolean checkReadAndWrite;
+
     /*--------------------------------------Public Method------------------------ */
 
-    public Boolean readNfcTag(String key){
+    public String readNfcTag(String key){
         String[] temp = new String[2];
         temp[0]="http://192.168.4.1/Client/ReadTag";
         temp[1]=key;
         new PostTask().execute(temp);
-        return checkReadAndWrite;
+        return convertStringReadedToJson(dataReaded,getNameFieldData());
     }
 
-    //public void writeNfcTag(){
+    public void writeNfcTag(String dataByJson){
 
-    //}
+    }
     /*--------------------------------------Private Method------------------------*/
+    //cắt chuỗi dạng &vdvd#ddfd#cđ#cdv$ thành Json
+    private String[] getNameFieldData(){
+        String[] nameFieldData = new String[14];
+        nameFieldData[0] = "ID";
+        nameFieldData[1] = "nameFarm";
+        nameFieldData[2] = "earNumber";
+        nameFieldData[3] = "dateImport";
+        nameFieldData[4] = "dateSex";
+        nameFieldData[5] = "numberVaccineParent";
+        nameFieldData[6] = "vaccineParent";
+        nameFieldData[7] = "dategoat";
+        nameFieldData[8] = "numOfChildBorned";
+        nameFieldData[9] = "numOfChildDie";
+        nameFieldData[10] = "numberVaccinechild";
+        nameFieldData[11] = "vaccinechild";
+        nameFieldData[12] = "numberVaccineParentNew";
+        nameFieldData[13] = "vaccineParentNew";
+        return nameFieldData;
+    }
+    private String convertStringReadedToJson(String str,String[] nameFieldData){
+        if(str == null) return null;
+        Map<String, String> inputData = new HashMap<String,String>();
+        int m = 1;
+        int p = 1;
+        for (int i = 0; i < str.length() ; i++){
+            if(str.charAt(i) == '#') p++;
+        }
+        String[] buf= new String[p];
+        int[] temp = new int[p + 1];
+        temp[0]=0;
+        temp[p]=str.length()-1;
+        if(p != nameFieldData.length) return null;
+        if (str.startsWith("$")&&str.endsWith("$")){
+            for (int i=1; i < str.length()-1; i++){
+                if(str.charAt(i)=='#'){
+                    temp[m] = i;
+                    m++;
+                }
+            }
+            for(int i = 0; i < p; i++){
+                buf[i] = str.substring(temp[i]+1,temp[i+1]);
+            }
+            String strOut="";
+            for (int i = 0; i < p; i++){
+                inputData.put(nameFieldData[i],buf[i]);
+            }
+            return handleJson.setJson(inputData);
+        }else return null;
+    }
     private class PostTask extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... data) {
@@ -57,6 +108,7 @@ public class readWriteNfc {
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(data.length-1);
                 nameValuePairs.add(new BasicNameValuePair("Key", data[1]));
                 if(data.length>2) {
+                    nameValuePairs.add(new BasicNameValuePair("Key", data[2]));
                 }
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 //execute http post
