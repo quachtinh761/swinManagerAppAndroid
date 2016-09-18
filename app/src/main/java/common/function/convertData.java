@@ -6,7 +6,7 @@ package common.function;
  * Created by nguye on 9/8/2016.
  */
 public class convertData {
-    //cắt chuỗi dạng &vdvd#ddfd#cđ#cdv$ thành mảng
+    //cắt chuỗi dạng &vdvd#ddfd#cđ#cdv$ thành Json
     public static String[] cuttingStringToArray(String str){
         int m = 1;
         String[] buf= new String[5];

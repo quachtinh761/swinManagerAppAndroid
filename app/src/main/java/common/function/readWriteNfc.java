@@ -1,17 +1,22 @@
 package common.function;
 
 import android.os.AsyncTask;
-import android.util.Log;
-
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-
+import org.apache.http.message.BasicNameValuePair;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+//import common.function.handleJson;
 
 /**
  * Thêm quyền sau:
@@ -23,75 +28,55 @@ import java.io.InputStreamReader;
  */
 public class readWriteNfc {
     /*---------------------------------------variale-----------------------------*/
-    public static boolean readCheck = false;
-    protected static String readData;
+    // String urlWrite = "http://192.168.4.1/Client/WriteTag";
+    private String dataReaded="";
+    private boolean checkReadAndWrite;
     /*--------------------------------------Public Method------------------------ */
-    public static String[] readNfcTag(){
-        String html = "http://192.168.4.1/Client/ReadTag?Key=123456123456";
-        HttpAsyncTaskRead read = new HttpAsyncTaskRead();
-        read.execute(html);
-        return convertData.cuttingStringToArray(readData);
-    }
-    public static boolean writeNfcTag(String datawrite,String pass){
 
-        String html = "192.168.4.1/Client/WriteTag?Key=" + pass;
-        html = html + convertData.makeLinkToWrite(convertData.cuttingStringToArray(datawrite));
-        HttpAsyncTaskRead wtr = new HttpAsyncTaskRead();
-        wtr.execute(html);
-        boolean checkwrite = readData.equals("False");
-        if (checkwrite) return false;
-        else return true;
+    public Boolean readNfcTag(String key){
+        String[] temp = new String[2];
+        temp[0]="http://192.168.4.1/Client/ReadTag";
+        temp[1]=key;
+        new PostTask().execute(temp);
+        return checkReadAndWrite;
     }
+
+    //public void writeNfcTag(){
+
+    //}
     /*--------------------------------------Private Method------------------------*/
-    private static String GET(String url) {
-        InputStream inputStream = null;
-        String result = "";
-        try {
-
-            // create HttpClient
+    private class PostTask extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... data) {
+            // Create a new HttpClient and Post Header
             HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost(data[0]);
+            StringBuilder stringResponse = new StringBuilder();
+            try {
+                //add data
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(data.length-1);
+                nameValuePairs.add(new BasicNameValuePair("Key", data[1]));
+                if(data.length>2) {
+                }
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                //execute http post
+                HttpResponse response = httpclient.execute(httppost);
+                if (response.getStatusLine().getStatusCode()==200){
+                    HttpEntity messageEntity = response.getEntity();
+                    InputStream is = messageEntity.getContent();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        stringResponse.append(line);
+                    }
+                }
 
-            // make GET request to the given URL
-            HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
+                dataReaded=stringResponse.toString();
 
-            // receive response as inputStream
-            inputStream = httpResponse.getEntity().getContent();
+            } catch (IOException e) {
 
-            // convert inputstream to string
-            if (inputStream != null)
-                result = convertInputStreamToString(inputStream);
-            else
-                result = "";
-
-        } catch (Exception e) {
-            Log.d("InputStream", e.getLocalizedMessage());
-        }
-
-        return result;
-    }
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while ((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        inputStream.close();
-        return result;
-
-    }
-    private static class HttpAsyncTaskRead extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-
-            return GET(urls[0]);
-        }
-
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            readData = result;
-            super.onPostExecute(result);
+            }
+            return dataReaded;
         }
     }
 }
