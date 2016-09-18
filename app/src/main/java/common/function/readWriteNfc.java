@@ -43,8 +43,12 @@ public class readWriteNfc {
         return convertStringReadedToJson(dataReaded,getNameFieldData());
     }
 
-    public void writeNfcTag(String dataByJson){
-
+    public void writeNfcTag(String key, String dataByJsonString){
+        String[] temp = new String[2];
+        temp[0] = "http://192.168.4.1/Client/ReadTag";
+        temp[1]= key;
+        temp[3] = dataByJsonString;
+        new PostTask().execute(temp);
     }
     /*--------------------------------------Private Method------------------------*/
     //cắt chuỗi dạng &vdvd#ddfd#cđ#cdv$ thành Json
