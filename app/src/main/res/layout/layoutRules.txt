@@ -1,7 +1,0 @@
-Background color: [153;217;231;255]RGB
-Hidden text color: [195;195;195;255]RGB
-Text field color: [255;255;255;255]RGB
-Background text color: [0;0;0;255]RGB
-Button color: [141;195;69;255]RGB
-Button text color: [255;255;255;255]RGB
-
