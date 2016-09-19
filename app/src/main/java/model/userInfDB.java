@@ -19,7 +19,7 @@ public class userInfDB {
     private SQLiteDatabase db;
     //this is key of swine in database
     public String DBTable = "user";
-    public static String KEY_id = userConstant.userIdString,
+    private String KEY_id = userConstant.userIdString,
             KEY_password = userConstant.passwordString,
             KEY_name = userConstant.nameString,
             KEY_birthday = userConstant.birthdayString,
@@ -75,5 +75,22 @@ public class userInfDB {
 
     public List <String[]> searchByName(String nameToSearch){
         return DBTemplate.searchTable(this.db, "*", this.DBTable, this.KEY_name + "='" + nameToSearch + "'", "", "");
+    }
+
+    public boolean deleteUserById(String idToDelete){
+        return DBTemplate.deleteRecord(this.db, this.DBTable, this.KEY_id + "=" + idToDelete);
+    }
+
+    public boolean deleteUserByName(String nameToDelete){
+        return DBTemplate.deleteRecord(this.db, this.DBTable, this.KEY_id + "=" + nameToDelete);
+    }
+
+    /**
+     * Map <String, String> conditions = new HashMap<String,String>();
+     * conditions.put("id","123456");
+     * conditions.put("<columnName>","<value>");
+     **/
+    public boolean deleteUserBy(Map<String, String> conditions){
+        return DBTemplate.deleteRecordBy(this.db, this.DBTable, conditions);
     }
 }

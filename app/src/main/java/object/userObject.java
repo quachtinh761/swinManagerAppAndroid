@@ -55,6 +55,15 @@ public class userObject {
     }
 
     public String getRight() {
-        return right;
+        switch (this.right){
+            case "0":
+                return "";
+            default:
+                return "";
+        }
+    }
+
+    public void setRight(String right){
+        this.right = right;
     }
 }

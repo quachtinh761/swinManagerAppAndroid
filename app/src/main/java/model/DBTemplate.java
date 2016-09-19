@@ -130,5 +130,38 @@ public class DBTemplate extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * delete record in table
+     **/
+    public static boolean deleteRecord(SQLiteDatabase db, String tableName, String condition){
+        try {
+            String sql = "DELETE * FROM " + tableName + " WHERE " + condition;
+            db.execSQL(sql);
+            db.close(); //Closing database connection
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
 
+    /**
+     * Map <String, String> conditions = new HashMap<String,String>();
+     * conditions.put("id","123456");
+     * conditions.put("<columnName>","<value>");
+     **/
+    public static boolean deleteRecordBy(SQLiteDatabase db, String tableName, Map<String, String> conditions){
+        String sql = "DELETE * FROM " + tableName + " WHERE ";
+        for (Map.Entry<String, String> entry : conditions.entrySet()) {
+            sql += entry.getKey() + "=" + entry.getValue() + " AND ";
+        }
+        if (sql.toUpperCase().endsWith("AND ")){
+            sql = sql.substring(0, sql.length() - 5);
+        }
+        sql += ";";
+        try{
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
 }
