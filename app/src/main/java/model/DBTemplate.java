@@ -135,7 +135,7 @@ public class DBTemplate extends SQLiteOpenHelper {
      **/
     public static boolean deleteRecord(SQLiteDatabase db, String tableName, String condition){
         try {
-            String sql = "DELETE * FROM " + tableName + " WHERE " + condition;
+            String sql = "DELETE FROM " + tableName + " WHERE " + condition;
             db.execSQL(sql);
             db.close(); //Closing database connection
             return true;
@@ -150,7 +150,7 @@ public class DBTemplate extends SQLiteOpenHelper {
      * conditions.put("<columnName>","<value>");
      **/
     public static boolean deleteRecordBy(SQLiteDatabase db, String tableName, Map<String, String> conditions){
-        String sql = "DELETE * FROM " + tableName + " WHERE ";
+        String sql = "DELETE FROM " + tableName + " WHERE ";
         for (Map.Entry<String, String> entry : conditions.entrySet()) {
             sql += entry.getKey() + "=" + entry.getValue() + " AND ";
         }
