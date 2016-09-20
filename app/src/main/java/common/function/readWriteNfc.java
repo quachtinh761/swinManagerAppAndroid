@@ -30,7 +30,6 @@ import java.util.Map;
  */
 public class readWriteNfc {
     /*---------------------------------------variale-----------------------------*/
-    // String urlWrite = "http://192.168.4.1/Client/WriteTag";
     private String dataReaded="";
 
     /*--------------------------------------Public Method------------------------ */
@@ -43,10 +42,11 @@ public class readWriteNfc {
         return convertStringReadedToJson(dataReaded,getNameFieldData());
     }
 
-    public void writeNfcTag(String key, String dataByJsonString){
-        String[] temp = new String[2];
-        temp[0] = "http://192.168.4.1/Client/ReadTag";
-        temp[1]= key;
+    public void writeNfcTag(String key,String idCard, String dataByJsonString){
+        String[] temp = new String[4];
+        temp[0] = "http://192.168.4.1/Client/WriteTag";
+        temp[1] = key;
+        temp[2] = idCard;
         temp[3] = dataByJsonString;
         new PostTask().execute(temp);
     }
@@ -112,7 +112,8 @@ public class readWriteNfc {
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(data.length-1);
                 nameValuePairs.add(new BasicNameValuePair("Key", data[1]));
                 if(data.length>2) {
-                    nameValuePairs.add(new BasicNameValuePair("Key", data[2]));
+                    nameValuePairs.add(new BasicNameValuePair("ID", data[2]));
+                    nameValuePairs.add(new BasicNameValuePair("Data", data[3]));
                 }
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 //execute http post
