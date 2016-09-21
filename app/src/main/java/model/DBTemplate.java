@@ -150,15 +150,16 @@ public class DBTemplate extends SQLiteOpenHelper {
      * conditions.put("<columnName>","<value>");
      **/
     public static boolean deleteRecordBy(SQLiteDatabase db, String tableName, Map<String, String> conditions){
-        String sql = "DELETE FROM " + tableName + " WHERE ";
-        for (Map.Entry<String, String> entry : conditions.entrySet()) {
-            sql += entry.getKey() + "=" + entry.getValue() + " AND ";
-        }
-        if (sql.toUpperCase().endsWith("AND ")){
-            sql = sql.substring(0, sql.length() - 5);
-        }
-        sql += ";";
-        try{
+        try {
+            String sql = "DELETE FROM " + tableName + " WHERE ";
+            for (Map.Entry<String, String> entry : conditions.entrySet()) {
+                sql += entry.getKey() + "=" + entry.getValue() + " AND ";
+            }
+            if (sql.toUpperCase().endsWith("AND ")) {
+                sql = sql.substring(0, sql.length() - 5);
+            }
+            sql += ";";
+            db.execSQL(sql);
             return true;
         }catch (Exception e){
             return false;
