@@ -34,7 +34,7 @@ public class readWriteNfc {
 
     /*--------------------------------------Public Method------------------------ */
 
-    public String readNfcTag(String key){
+    public String[] readNfcTag(String key){
         String[] temp = new String[2];
         temp[0]="http://192.168.4.1/Client/ReadTag";
         temp[1]=key;
@@ -42,15 +42,34 @@ public class readWriteNfc {
         return convertStringReadedToJson(dataReaded,getNameFieldData());
     }
 
-    public void writeNfcTag(String key,String idCard, String dataByJsonString){
+    public void writeNfcTag(String key,String idCard, String dataString[]){
         String[] temp = new String[4];
         temp[0] = "http://192.168.4.1/Client/WriteTag";
         temp[1] = key;
         temp[2] = idCard;
-        temp[3] = dataByJsonString;
+        temp[3] = convertToWrite(dataString);
         new PostTask().execute(temp);
     }
+
+    //dataUpdate must full field as dataWrite
+    public void update(String key,String idCard,String dataUpdate[]){
+        String temp[] = readNfcTag(key);
+        for (int i=0; i<dataUpdate.length; i++){
+            if ((!temp[i].equals(dataUpdate[i])) && (!dataUpdate[i].equals(""))) temp[i] = dataUpdate[i];
+        }
+        writeNfcTag(key,idCard,temp);
+    }
     /*--------------------------------------Private Method------------------------*/
+    private String convertToWrite(String dataString[]){
+        String temp = "$";
+        for (int i = 0; i < dataString.length ; i++){
+            if (i != dataString.length - 1){
+                temp = temp + dataString[i] + "#";
+            }
+            else temp = temp + dataString[i] + "$";
+        }
+        return temp;
+    }
     //cắt chuỗi dạng &vdvd#ddfd#cđ#cdv$ thành Json
     private String[] getNameFieldData(){
         String[] nameFieldData = new String[14];
@@ -70,7 +89,7 @@ public class readWriteNfc {
         nameFieldData[13] = "vaccineParentNew";
         return nameFieldData;
     }
-    private String convertStringReadedToJson(String str,String[] nameFieldData){
+    private String[] convertStringReadedToJson(String str,String[] nameFieldData){
         if(str == null) return null;
         Map<String, String> inputData = new HashMap<String,String>();
         int m = 1;
@@ -97,7 +116,7 @@ public class readWriteNfc {
             for (int i = 0; i < p; i++){
                 inputData.put(nameFieldData[i],buf[i]);
             }
-            return handleJson.setJson(inputData);
+            return handleJson.getJson(inputData,nameFieldData);
         }else return null;
     }
     private class PostTask extends AsyncTask<String, String, String> {
